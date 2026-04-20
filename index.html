@@ -3,10 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Development | Nes Valmo</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>Website Launch Countdown | Nes Valmo</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --text: #f5f5f5;
+            --muted: #b3b3b3;
+        }
+
+        ::selection {
+            background-color: rgba(100,0,0,0.65);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1b1b1b 0%, var(--bg) 45%, #000000 100%);
+            color: var(--text);
+            font-family: Inter, Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+            line-height: 1.2;
+            padding: 2rem 1rem;
+        }
+
+        main {
+            width: min(960px, 100%);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        h1 {
+            font-size: clamp(1.4rem, 2vw + 1rem, 2.5rem);
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        #countdown {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(72px, 1fr));
+            gap: clamp(0.8rem, 2.5vw, 2rem);
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+
+        .value {
+            font-size: clamp(2rem, 7vw, 5.5rem);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .label {
+            font-size: clamp(0.7rem, 0.9vw + 0.35rem, 1rem);
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        #status {
+            min-height: 1.5em;
+            font-size: clamp(1rem, 1.2vw + 0.6rem, 1.35rem);
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 640px) {
+            #countdown {
+                grid-template-columns: repeat(2, minmax(90px, 1fr));
+                max-width: 420px;
+            }
+
+            main {
+                gap: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="container"><h2>Something will happen here some day.</h2></div>
+    <main>
+        <h1>Launching Soon</h1>
+
+        <section id="countdown" aria-label="Countdown timer">
+            <div class="time-block">
+                <div class="value" id="days">00</div>
+                <div class="label">Days</div>
+            </div>
+            <div class="time-block">
+                <div class="value" id="hours">00</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="time-block">
+                <div class="value" id="minutes">00</div>
+                <div class="label">Minutes</div>
+            </div>
+            <div class="time-block">
+                <div class="value" id="seconds">00</div>
+                <div class="label">Seconds</div>
+            </div>
+        </section>
+
+        <p id="status" aria-live="polite">Launch Date: May 25th, 2026</p>
+    </main>
+
+    <script>
+        const targetDate = new Date("2026-05-25T09:00:00");
+
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+        const statusEl = document.getElementById("status");
+
+        function pad(value) {
+            return String(value).padStart(2, "0");
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = targetDate.getTime() - now.getTime();
+
+            if (difference <= 0) {
+                daysEl.textContent = "00";
+                hoursEl.textContent = "00";
+                minutesEl.textContent = "00";
+                secondsEl.textContent = "00";
+                statusEl.textContent = "Launched!";
+                clearInterval(timer);
+                return;
+            }
+
+            const totalSeconds = Math.floor(difference / 1000);
+            const days = Math.floor(totalSeconds / (24 * 60 * 60));
+            const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const seconds = totalSeconds % 60;
+
+            daysEl.textContent = pad(days);
+            hoursEl.textContent = pad(hours);
+            minutesEl.textContent = pad(minutes);
+            secondsEl.textContent = pad(seconds);
+        }
+
+        updateCountdown();
+        const timer = setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
